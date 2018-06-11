@@ -1,0 +1,22 @@
+#!/bin/csh
+
+#$ -M qlou@nd.edu
+#$ -m abe
+#$ -r y
+#$ -q gpu@qa-1080ti-005
+#$ -N alexnet-1-1111
+#$ -pe smp 6
+#$ -l gpu=4
+
+module load tensorflow
+
+module load opencv
+
+mkdir -p /tmp/qlou/val
+
+rsync -a --partial /afs/crc.nd.edu/user/q/qlou/Private/dataset/IMAGENET_data/train /tmp/qlou
+rsync -a --partial /afs/crc.nd.edu/user/q/qlou/Private/dataset/IMAGENET_data/val1/ /tmp/qlou/val
+rsync -a --partial /afs/crc.nd.edu/user/q/qlou/Private/dataset/IMAGENET_data/val2/ /tmp/qlou/val
+
+python alexnet-1-1111.py --dorefa 1,1,32 --data /tmp/qlou --gpu 0,1,2,3
+
